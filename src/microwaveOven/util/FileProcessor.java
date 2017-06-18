@@ -15,17 +15,11 @@ public class FileProcessor {
 
     //constructor
     public FileProcessor(String path) {
-        this.setInputPath(path);
+        this.inputPath = path;
         getInitializedFileObject();
     }
 
-    private String getInputPath() {
-        return inputPath;
-    }
 
-    private void setInputPath(String inputPath) {
-        this.inputPath = inputPath;
-    }
 
     private BufferedReader getInitializedBufferedReaderObject(FileInputStream fStream){
         return new BufferedReader(new InputStreamReader(fStream));
@@ -33,7 +27,7 @@ public class FileProcessor {
 
     private void getInitializedFileObject(){
         br = null;
-        String path = getFilePath();
+        String path = inputPath;
         file = new File(path);
         if (file.exists() && !file.isDirectory()) {
             try {
@@ -52,9 +46,7 @@ public class FileProcessor {
         }
     }
 
-    private String getFilePath() {
-        return getInputPath();
-    }
+
 
     //get the one at a time from the input file
     public String readLine() {
@@ -78,7 +70,7 @@ public class FileProcessor {
     public String toString(){
         String className = this.getClass().getName();
         String description = "This class has a method String readLine(...), which returns one line at a time from a file.";
-        String str = String.format("Class : %s\nMethod toString()\nDescription : %s\nPrivate variable inputPath value is : %s\n",className,description,getFilePath());
+        String str = String.format("Class : %s\nMethod toString()\nDescription : %s\nPrivate variable inputPath value is : %s\n",className,description,inputPath);
         System.out.println(str);
         return str;
     }

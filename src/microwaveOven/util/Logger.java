@@ -1,5 +1,54 @@
 package microwaveOven.util;
 
-class Logger {
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.BufferedWriter;
+import java.io.Writer;
+import java.io.OutputStreamWriter;
 
+class Logger implements FileDisplayInterface,StdoutDisplayInterface{
+    private static StringBuilder log;
+
+
+    public static void storeNewResult(Object obj) {
+        String str = obj.toString();
+        str = String.format("%s%s", str, "\n");
+        log.append(str);
+    }
+
+    private String getStoredString() {
+        return log.toString().toString();
+    }
+
+
+    @Override
+    public void writeToStdout() {
+        System.out.println(getStoredString());
+    }
+
+    @Override
+    public void writeToFile() {
+        String outputPath = "";
+        File file;
+        try {
+            if (null != outputPath) {
+                file = new File(outputPath);
+
+                if (file.exists() && !file.isDirectory()) file.delete();
+
+                try (Writer writer = new BufferedWriter(new OutputStreamWriter(
+                        new FileOutputStream(outputPath), "utf-8"))) {
+                    String str = getStoredString();
+                    writer.write(str);
+                }
+
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("Error in printing stored string into the output file");
+            System.exit(0);
+        }
+
+
+    }
 }

@@ -1,48 +1,31 @@
 package microwaveOven.util;
 
 import java.io.File;
-import java.io.Writer;
 import java.io.FileOutputStream;
 import java.io.BufferedWriter;
+import java.io.Writer;
 import java.io.OutputStreamWriter;
 
 
 public class Results implements StdoutDisplayInterface, FileDisplayInterface {
 
-    private StringBuilder stringBuilderStorage;
+    private StringBuilder stringBuilderStorage = new StringBuilder();
     private String outputPath;
 
     public Results(String path) {
-        this.setStringBuilderStorage(new StringBuilder());
-        this.setOutputPath(path);
-    }
 
-    private String getOutputPath() {
-        return outputPath;
-    }
-
-    private void setOutputPath(String outputPath) {
-        this.outputPath = outputPath;
-    }
-
-    private String getStoredString() {
-        return getStringBuilderStorage().toString().trim();
-    }
-
-    private StringBuilder getStringBuilderStorage() {
-        return stringBuilderStorage;
-    }
-
-    private void setStringBuilderStorage(StringBuilder stringBuilderStorage) {
-        this.stringBuilderStorage = stringBuilderStorage;
+        this.outputPath = path;
     }
 
     public void storeNewResult(Object obj) {
         String str = obj.toString();
-        str = String.format("%s%s",str,"\n");
-        StringBuilder sb = getStringBuilderStorage();
-        sb.append(str);
-        setStringBuilderStorage(sb);
+        str = String.format("%s%s", str, "\n");
+
+        stringBuilderStorage.append(str);
+    }
+
+    private String getStoredString() {
+        return stringBuilderStorage.toString().toString();
     }
 
     @Override
@@ -53,18 +36,19 @@ public class Results implements StdoutDisplayInterface, FileDisplayInterface {
     @Override
     public void writeToFile() {
 
-        File file ;
+        File file;
         try {
+            if (null != outputPath) {
+                file = new File(outputPath);
 
-            file = new File(getOutputPath());
+                if (file.exists() && !file.isDirectory()) file.delete();
 
-            if (file.exists() && !file.isDirectory()) {
-                file.delete();
-            }
-            try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream(getOutputPath()), "utf-8"))) {
-                String str = getStoredString();
-                writer.write(str);
+                try (Writer writer = new BufferedWriter(new OutputStreamWriter(
+                        new FileOutputStream(outputPath), "utf-8"))) {
+                    String str = getStoredString();
+                    writer.write(str);
+                }
+
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -76,10 +60,10 @@ public class Results implements StdoutDisplayInterface, FileDisplayInterface {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         String className = this.getClass().getName();
         String description = "This class has a data structure as private data member that store Strings and it implements FileDisplayInterface and StdoutDisplayInterface";
-        String str = String.format("\nClass : %s\nMethod toString()\nDescription : %s\nPrivate variable :\noutputPath value is : %s\nstringBuilderStorage value is: %s\n",className,description ,getOutputPath(), getStringBuilderStorage().toString());
+        String str = String.format("\nClass : %s\nMethod toString()\nDescription : %s\nPrivate variable :\noutputPath value is : %s\nstringBuilderStorage value is: %s\n", className, description, outputPath, getStoredString());
         System.out.println(str);
         return str;
     }
