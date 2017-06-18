@@ -9,5 +9,5 @@ public class Driver
     }
     public void display(){System.out.println("Hello World");}
 
-
+    int x;
 }
