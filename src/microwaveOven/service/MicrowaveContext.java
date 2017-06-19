@@ -1,8 +1,10 @@
 package microwaveOven.service;
 
+
+import microwaveOven.util.Logger;
+import microwaveOven.util.Results;
+
 import java.time.LocalTime;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by abhineetsharma on 6/17/17.
@@ -22,33 +24,39 @@ public class MicrowaveContext implements MicrowaveStateI {
     private MicrowaveStateI haltState;
     private MicrowaveStateI clockSetState;
 
-    private int cookingTime;
-    private LocalTime time = LocalTime.now();
+    MicrowaveStateI state;
+    private CookingTimeObject cookingTimeObject;
 
-    public MicrowaveContext() {
+    private Results results;
+
+    public MicrowaveContext(Results results) {
         this.initialState = new InitialState(this);
         this.cookingState = new CookingState(this);
         this.haltState = new HaltState(this);
         this.clockSetState = new ClockSetState(this);
-
+        this.setCookingTimeObject(new CookingTimeObject());
+        this.state = getInitialState();
+        this.results = results;
     }
 
-    MicrowaveStateI state = getInitialState();
+
+
 
     public void action(String selector) {
-        int num = 0;
-        int c = 0;
-        switch (c) {
-            case 1:
+        int num = isStrigAInteger(selector);
+        if(num > -1)
+            selector = "keyPress";
+        switch (selector) {
+            case "setOrStart":
                 setOrStart();
                 break;
-            case 2:
+            case "cancelOrStop":
                 cancelOrStop();
                 break;
-            case 3:
+            case "setClock":
                 setClock();
                 break;
-            case 4:
+            case "keyPress":
                 pressKey(num);
                 break;
         }
@@ -75,18 +83,6 @@ public class MicrowaveContext implements MicrowaveStateI {
         state.pressKey(num);
     }
 
-    private void countDown() {
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            int i = cookingTime;
-
-            public void run() {
-                System.out.println(i--);
-                if (i < 0)
-                    timer.cancel();
-            }
-        }, 0, 1000);
-    }
 
     public MicrowaveStateI getInitialState() {
         return initialState;
@@ -108,20 +104,35 @@ public class MicrowaveContext implements MicrowaveStateI {
     }
 
 
-    public int getCookingTime() {
-        return cookingTime;
+    public CookingTimeObject getCookingTimeObject() {
+        return cookingTimeObject;
     }
 
-    public void setCookingTime(int cookingTime) {
-        this.cookingTime = cookingTime;
+    void setCookingTimeObject(CookingTimeObject cookingTimeObject) {
+        this.cookingTimeObject = cookingTimeObject;
+    }
+
+    int isStrigAInteger(String str){
+        str = str.trim();
+
+        try{
+            int num = Integer.parseInt(str);
+            return num;
+        }
+        catch (NumberFormatException ex){
+            Logger.storeNewResult(ex.getStackTrace());
+        }
+
+        return -1;
+    }
+
+    void storeNewResult(Object obj){
+        results.storeNewResult(obj);
     }
 
 
-    public LocalTime getTime() {
-        return time;
-    }
-
-    public void setTime(LocalTime time) {
-        this.time = time;
-    }
+}
+class CookingTimeObject{
+    int cookingTime;
+    LocalTime time;
 }

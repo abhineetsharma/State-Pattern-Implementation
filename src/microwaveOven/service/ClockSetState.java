@@ -10,16 +10,19 @@ import java.time.LocalTime;
 public class ClockSetState implements MicrowaveStateI {
 
     MicrowaveContext context;
-
+    private String className;
     private StringBuilder sbr;
     private boolean newFlag = true;
 
     public ClockSetState(MicrowaveContext context){
         this.context = context;
+        this.className = this.getClass().getSimpleName();
     }
 
     @Override
     public void setOrStart() {
+        String str = String.format("State : %s, Function name : %s",getClassName() ,getMethodName());
+        context.storeNewResult(str);
         if(validatePressKey()) {
             try {
                 String minStr = sbr.substring(sbr.length(),sbr.length()+1);
@@ -29,7 +32,7 @@ public class ClockSetState implements MicrowaveStateI {
                 int hr = Integer.parseInt(hrStr);
                 LocalTime lt = LocalTime.of(hr,min);
                 newFlag = true;
-                context.setTime(lt);
+
                 context.setState(context.getInitialState());
             } catch (NumberFormatException e) {
                 Logger.storeNewResult(e.getStackTrace());
@@ -38,21 +41,30 @@ public class ClockSetState implements MicrowaveStateI {
         }
         else{
             String msg = "Please press any key 0 to 9";
+            context.storeNewResult(msg);
         }
     }
 
     @Override
     public void cancelOrStop() {
+        String str = String.format("State : %s, Function name : %s",getClassName() ,getMethodName());
+        context.storeNewResult(str);
         String msg = "cancel or Stop disabled";
+        context.storeNewResult(msg);
     }
 
     @Override
     public void setClock() {
+        String str = String.format("State : %s, Function name : %s",getClassName() ,getMethodName());
+        context.storeNewResult(str);
         String msg = "setClock disabled";
+        context.storeNewResult(msg);
     }
 
     @Override
     public void pressKey(int num) {
+        String str = String.format("State : %s, Function name : %s",getClassName() ,getMethodName());
+        context.storeNewResult(str);
         if(newFlag){
             sbr = new StringBuilder();
             newFlag = false;
@@ -70,5 +82,13 @@ public class ClockSetState implements MicrowaveStateI {
             return true;
         }
         else return false;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    String getMethodName() {
+        return Thread.currentThread().getStackTrace()[2].getMethodName();
     }
 }

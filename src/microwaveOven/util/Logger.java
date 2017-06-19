@@ -7,7 +7,7 @@ import java.io.Writer;
 import java.io.OutputStreamWriter;
 
 public class Logger implements FileDisplayInterface,StdoutDisplayInterface{
-    private static StringBuilder log;
+    private static StringBuilder log = new StringBuilder();
 
     public static boolean errors = false;
 
