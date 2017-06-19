@@ -6,24 +6,26 @@ import java.io.BufferedWriter;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
 
-class Logger implements FileDisplayInterface,StdoutDisplayInterface{
+public class Logger implements FileDisplayInterface,StdoutDisplayInterface{
     private static StringBuilder log;
 
+    public static boolean errors = false;
 
     public static void storeNewResult(Object obj) {
+        errors = true;
         String str = obj.toString();
         str = String.format("%s%s", str, "\n");
         log.append(str);
     }
 
-    private String getStoredString() {
-        return log.toString().toString();
+    private String getStoredLog() {
+        return log.toString().trim();
     }
 
 
     @Override
     public void writeToStdout() {
-        System.out.println(getStoredString());
+        System.out.println(getStoredLog());
     }
 
     @Override
@@ -38,14 +40,14 @@ class Logger implements FileDisplayInterface,StdoutDisplayInterface{
 
                 try (Writer writer = new BufferedWriter(new OutputStreamWriter(
                         new FileOutputStream(outputPath), "utf-8"))) {
-                    String str = getStoredString();
+                    String str = getStoredLog();
                     writer.write(str);
                 }
 
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            System.out.println("Error in printing stored string into the output file");
+            System.out.println("Error in printing of stored string into the output file");
             System.exit(0);
         }
 

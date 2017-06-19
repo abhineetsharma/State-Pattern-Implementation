@@ -7,5 +7,5 @@ public interface MicrowaveStateI {
     void setOrStart();
     void cancelOrStop();
     void setClock();
-    void pressKey();
+    void pressKey(int num);
 }
