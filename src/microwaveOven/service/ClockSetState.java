@@ -7,14 +7,14 @@ import java.time.LocalTime;
 /**
  * Created by abhineetsharma on 6/19/17.
  */
-public class clockSetState implements MicrowaveStateI {
+public class ClockSetState implements MicrowaveStateI {
 
     MicrowaveContext context;
 
     private StringBuilder sbr;
     private boolean newFlag = true;
 
-    public clockSetState(MicrowaveContext context){
+    public ClockSetState(MicrowaveContext context){
         this.context = context;
     }
 
@@ -22,9 +22,14 @@ public class clockSetState implements MicrowaveStateI {
     public void setOrStart() {
         if(validatePressKey()) {
             try {
-                int num = Integer.parseInt(sbr.toString());
+                String minStr = sbr.substring(sbr.length(),sbr.length()+1);
+                int min = Integer.parseInt(minStr);
+
+                String hrStr = sbr.substring(0,sbr.length()-1);
+                int hr = Integer.parseInt(hrStr);
+                LocalTime lt = LocalTime.of(hr,min);
                 newFlag = true;
-                context.setTime(LocalTime.now());
+                context.setTime(lt);
                 context.setState(context.getInitialState());
             } catch (NumberFormatException e) {
                 Logger.storeNewResult(e.getStackTrace());

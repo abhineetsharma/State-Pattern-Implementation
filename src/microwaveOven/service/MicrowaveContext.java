@@ -1,6 +1,5 @@
 package microwaveOven.service;
 
-import java.sql.Time;
 import java.time.LocalTime;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -24,13 +23,13 @@ public class MicrowaveContext implements MicrowaveStateI {
     private MicrowaveStateI clockSetState;
 
     private int cookingTime;
-    private LocalTime time;
+    private LocalTime time = LocalTime.now();
 
     public MicrowaveContext() {
         this.initialState = new InitialState(this);
-        this.cookingState = new cookingState(this);
+        this.cookingState = new CookingState(this);
         this.haltState = new HaltState(this);
-        this.clockSetState = new clockSetState(this);
+        this.clockSetState = new ClockSetState(this);
 
     }
 

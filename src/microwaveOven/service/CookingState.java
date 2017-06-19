@@ -3,7 +3,7 @@ package microwaveOven.service;
 /**
  * Created by abhineetsharma on 6/19/17.
  */
-public class cookingState implements MicrowaveStateI {
+public class CookingState implements MicrowaveStateI {
 
     MicrowaveContext context;
 
@@ -11,7 +11,7 @@ public class cookingState implements MicrowaveStateI {
 
     StringBuilder sbr ;
 
-    public cookingState(MicrowaveContext context){
+    public CookingState(MicrowaveContext context){
         this.context = context;
     }
 
