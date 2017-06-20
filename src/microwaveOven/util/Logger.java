@@ -6,7 +6,7 @@ import java.io.BufferedWriter;
 import java.io.Writer;
 import java.io.OutputStreamWriter;
 
-public class Logger implements FileDisplayInterface,StdoutDisplayInterface{
+public class Logger {
     private static StringBuilder log = new StringBuilder();
 
     public static boolean errors = false;
@@ -16,20 +16,21 @@ public class Logger implements FileDisplayInterface,StdoutDisplayInterface{
         String str = obj.toString();
         str = String.format("%s%s", str, "\n");
         log.append(str);
+        writeToStdout();
     }
 
-    private String getStoredLog() {
+    private static String getStoredLog() {
         return log.toString().trim();
     }
 
 
-    @Override
-    public void writeToStdout() {
+
+    public static void writeToStdout() {
         System.out.println(getStoredLog());
     }
 
-    @Override
-    public void writeToFile() {
+
+    public static void writeToFile() {
         String outputPath = "";
         File file;
         try {

@@ -20,16 +20,16 @@ public class CookingState implements MicrowaveStateI {
     @Override
     public void setOrStart() {
         String str = String.format("State : %s, Function name : %s",getClassName() ,getMethodName());
-        context.storeNewResult(str);
+        context.storeStringToResult(str);
         String msg = "set Or Start disabled";
-        context.storeNewResult(msg);
+        context.storeStringToResult(msg);
         updateTimeObject();
     }
 
     @Override
     public void cancelOrStop() {
         String str = String.format("State : %s, Function name : %s",getClassName() ,getMethodName());
-        context.storeNewResult(str);
+        context.storeStringToResult(str);
         context.setState(context.getHaltState());
         updateTimeObject();
     }
@@ -37,26 +37,26 @@ public class CookingState implements MicrowaveStateI {
     @Override
     public void setClock() {
         String str = String.format("State : %s, Function name : %s",getClassName() ,getMethodName());
-        context.storeNewResult(str);
+        context.storeStringToResult(str);
         String msg = "set Clock disabled";
-        context.storeNewResult(msg);
+        context.storeStringToResult(msg);
         updateTimeObject();
     }
 
     @Override
     public void pressKey(int num) {
         String str = String.format("State : %s, Function name : %s",getClassName() ,getMethodName());
-        context.storeNewResult(str);
+        context.storeStringToResult(str);
         String msg = "press Key disabled";
-        context.storeNewResult(msg);
+        context.storeStringToResult(msg);
         updateTimeObject();
     }
 
     private void updateTimeObject() {
-        CookingTimeObject timeObject = null;
-        CookingTimeObject currentTimeObject = context.getCookingTimeObject();
+        CookingTime timeObject = null;
+        CookingTime currentTimeObject = context.getCookingTimeObject();
         if (null != currentTimeObject) {
-            long secPassed = ChronoUnit.SECONDS.between(currentTimeObject.time, LocalTime.now());
+            long secPassed = ChronoUnit.SECONDS.between(LocalTime.now(),currentTimeObject.time);
             if (secPassed > 0) {
                 currentTimeObject.cookingTime = (int) secPassed;
                 currentTimeObject.time.plusSeconds(currentTimeObject.cookingTime);
@@ -65,8 +65,7 @@ public class CookingState implements MicrowaveStateI {
             context.setCookingTimeObject(timeObject);
             if(timeObject == null){
                 String msg = "Cooking Done";
-                System.out.println(msg);
-                context.storeNewResult(msg);
+                context.storeStringToResult(msg);
                 context.setState(context.getInitialState());
             }
         }

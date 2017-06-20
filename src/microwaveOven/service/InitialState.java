@@ -1,5 +1,4 @@
 package microwaveOven.service;
-import microwaveOven.util.Logger;
 
 import java.time.LocalTime;
 
@@ -20,48 +19,53 @@ public class InitialState implements MicrowaveStateI {
     @Override
     public void setOrStart() {
         String str = String.format("State : %s, Function name : %s",getClassName() ,getMethodName());
-        context.storeNewResult(str);
-        if(sbr.length()>0){
+        context.storeStringToResult(str);
+        if(null != sbr && sbr.length()>0){
             try{
                 int num = Integer.parseInt(sbr.toString());
+                sbr = null;
                 newFlag = true;
-                CookingTimeObject timeObject = new CookingTimeObject();
+                CookingTime timeObject = new CookingTime();
                 timeObject.cookingTime =  num;
-                timeObject.time = LocalTime.now();
+                timeObject.time = LocalTime.now().plusSeconds(num);
                 context.setCookingTimeObject(timeObject);
+
+
                 context.setState(context.getCookingState());
+
+
             }catch (NumberFormatException e){
-                Logger.storeNewResult(e.getStackTrace());
+                e.printStackTrace();
                 System.exit(0);
             }
         }
         else{
             String msg = "Please press any key 0 to 9";
-            context.storeNewResult(msg);
+            context.storeStringToResult(msg);
         }
     }
 
     @Override
     public void cancelOrStop() {
         String str = String.format("State : %s, Function name : %s",getClassName() ,getMethodName());
-        context.storeNewResult(str);
+        context.storeStringToResult(str);
         String msg = "Cancel disabled";
-        context.storeNewResult(msg);
+        context.storeStringToResult(msg);
     }
 
     @Override
     public void setClock() {
         String str = String.format("State : %s, Function name : %s",getClassName() ,getMethodName());
-        context.storeNewResult(str);
+        context.storeStringToResult(str);
         context.setState(context.getClockSetState());
     }
 
     @Override
     public void pressKey(int num) {
         String str = String.format("State : %s, Function name : %s",getClassName() ,getMethodName());
-        context.storeNewResult(str);
+        context.storeStringToResult(str);
         String msg = String.format("");
-        context.storeNewResult(msg);
+        //context.storeStringToResult(msg);
         if(newFlag){
             sbr = new StringBuilder();
             newFlag = false;

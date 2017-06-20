@@ -20,8 +20,8 @@ public class Results implements StdoutDisplayInterface, FileDisplayInterface {
     public void storeNewResult(Object obj) {
         String str = obj.toString();
         str = String.format("%s%s", str, "\n");
-
-        stringBuilderStorage.append(str);
+        System.out.print(str);
+        //stringBuilderStorage.append(str);
     }
 
     private String getStoredString() {

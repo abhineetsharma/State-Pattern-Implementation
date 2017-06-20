@@ -18,11 +18,11 @@ public class HaltState implements MicrowaveStateI {
     @Override
     public void setOrStart() {
         String str = String.format("State : %s, Function name : %s",getClassName() ,getMethodName());
-        context.storeNewResult(str);
-        CookingTimeObject currentTimeObject = context.getCookingTimeObject();
+        context.storeStringToResult(str);
+        CookingTime currentTimeObject = context.getCookingTimeObject();
         if(null != currentTimeObject )
         {
-            currentTimeObject.time.plusSeconds(currentTimeObject.cookingTime);
+            currentTimeObject.time = LocalTime.now().plusSeconds(currentTimeObject.cookingTime);
             context.setCookingTimeObject(currentTimeObject);
             context.setState(context.getCookingState());
         }
@@ -31,7 +31,7 @@ public class HaltState implements MicrowaveStateI {
     @Override
     public void cancelOrStop() {
         String str = String.format("State : %s, Function name : %s",getClassName() ,getMethodName());
-        context.storeNewResult(str);
+        context.storeStringToResult(str);
         context.setCookingTimeObject(null);
         context.setState(context.getInitialState());
     }
@@ -39,17 +39,17 @@ public class HaltState implements MicrowaveStateI {
     @Override
     public void setClock() {
         String str = String.format("State : %s, Function name : %s",getClassName() ,getMethodName());
-        context.storeNewResult(str);
-        String msg = "set Or Start disabled";
-        context.storeNewResult(msg);
+        context.storeStringToResult(str);
+        String msg = "set clock disabled";
+        context.storeStringToResult(msg);
     }
 
     @Override
     public void pressKey(int num) {
         String str = String.format("State : %s, Function name : %s",getClassName() ,getMethodName());
-        context.storeNewResult(str);
-        String msg = "set Or Start disabled";
-        context.storeNewResult(msg);
+        context.storeStringToResult(str);
+        String msg = "Press key disabled";
+        context.storeStringToResult(msg);
     }
     public String getClassName() {
         return className;
