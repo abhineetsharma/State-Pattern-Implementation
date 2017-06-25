@@ -1,6 +1,8 @@
 package microwaveOven.service;
+
 import microwaveOven.util.Logger;
 import microwaveOven.util.Results;
+
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -16,7 +18,7 @@ public class MicrowaveContext implements MicrowaveStateI {
     private MicrowaveStateI haltState;
     private MicrowaveStateI clockSetState;
 
-    MicrowaveStateI state;
+    private MicrowaveStateI state;
     private CookingTime cookingTimeObject;
     private DisplayTime displayTimeObject;
 
@@ -31,45 +33,44 @@ public class MicrowaveContext implements MicrowaveStateI {
         this.results = results;
         this.displayTimeObject = new DisplayTime();
         this.displayTimeObject.displayTime = this.displayTimeObject.localTime = LocalTime.now();
-        //this.storeStringToResult(this.generate72Dash());
-
         this.setState(getClockDisplayState());
     }
 
 
     public void action(String selector) {
         try {
-            updateDisplayTimeObject();
-            //showDisplayTime();
-            String msg = String.format("Key pressed : %s",selector);
-            storeStringToResult(msg);
-            switch (selector) {
-                case "setOrStart":
-                    setOrStart();
-                    break;
-                case "cancelOrStop":
-                    cancelOrStop();
-                    break;
-                case "setClock":
-                    setClock();
-                    break;
-                case "0":
-                case "1":
-                case "2":
-                case "3":
-                case "4":
-                case "5":
-                case "6":
-                case "7":
-                case "8":
-                case "9":
-                    pressKey(Integer.parseInt(selector));
-                    break;
-                default:
-                    storeStringToResult("Invalid key press");
+            if (selector.length() > 0) {
+                updateDisplayTimeObject();
+                String msg = String.format("Key pressed : %s", selector);
+                storeStringToResult(msg);
+                switch (selector) {
+                    case "setOrStart":
+                        setOrStart();
+                        break;
+                    case "cancelOrStop":
+                        cancelOrStop();
+                        break;
+                    case "setClock":
+                        setClock();
+                        break;
+                    case "0":
+                    case "1":
+                    case "2":
+                    case "3":
+                    case "4":
+                    case "5":
+                    case "6":
+                    case "7":
+                    case "8":
+                    case "9":
+                        pressKey(Integer.parseInt(selector));
+                        break;
+                    default:
+                        storeStringToResult("Invalid key press");
 
+                }
+                Thread.sleep(1000);
             }
-            Thread.sleep(1000);
 
         } catch (InterruptedException e) {
             Logger.log(e.toString());
@@ -118,14 +119,14 @@ public class MicrowaveContext implements MicrowaveStateI {
     }
 
     void setState(MicrowaveStateI state) {
-        results.storeNewResult(String.format("%s\nChanging State \n%s\nState set to : %s", generate72Dash(),generate72Dash(), beautifyName(state.getClass().getSimpleName())));
+        results.storeNewResult(String.format("%s\nChanging State \n%s\nState set to : %s", generate72Dash(), generate72Dash(), beautifyName(state.getClass().getSimpleName())));
         this.state = state;
-        if(state instanceof ClockDisplayState)showDisplayTime();
+        if (state instanceof ClockDisplayState) showDisplayTime();
     }
 
     void setCookingTimeObject(CookingTime cookingTimeObject) {
         if (null != cookingTimeObject) {
-            String msg = String.format("Cooking time %d sec left", cookingTimeObject.cookingTime);
+            String msg = String.format("Cooking time left : %d sec", cookingTimeObject.cookingTime);
             storeStringToResult(msg);
         }
         this.cookingTimeObject = cookingTimeObject;
@@ -136,23 +137,8 @@ public class MicrowaveContext implements MicrowaveStateI {
             results.storeNewResult(obj);
     }
 
-    private int isStringAInteger(String str) {
-        str = str.trim();
-
-        try {
-            int num = Integer.parseInt(str);
-            return num;
-        } catch (NumberFormatException e) {
-            Logger.log(e.toString());
-        }
-
-        return -1;
-    }
-
     void showDisplayTime() {
-        DateTimeFormatter Formatter =
-                DateTimeFormatter
-                        .ofLocalizedTime(FormatStyle.SHORT);
+        DateTimeFormatter Formatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
         storeStringToResult(String.format("Display time is : %s", displayTimeObject.displayTime.format(Formatter).toString()));
     }
 
@@ -163,27 +149,23 @@ public class MicrowaveContext implements MicrowaveStateI {
     }
 
     private void updateDisplayTimeObject() {
-
         DisplayTime dt = new DisplayTime();
         dt.displayTime = displayTimeObject.displayTime;
         dt.localTime = displayTimeObject.localTime;
-
         long sec = ChronoUnit.SECONDS.between(dt.localTime, LocalTime.now());
         displayTimeObject.displayTime = displayTimeObject.displayTime.plusSeconds(sec);
         displayTimeObject.localTime = LocalTime.now();
     }
 
-    private String beautifyName(String name){
+    private String beautifyName(String name) {
         StringBuilder sbr = new StringBuilder();
-        for(char c : name.toCharArray()){
-            int n = (int)c;
-            if(c<91){
+        for (char c : name.toCharArray()) {
+            int n = (int) c;
+            if (n <= (int)'Z' && n >= (int)'A')
                 sbr.append(" ");
-            }
+
             sbr.append(c);
         }
-
-
         return sbr.toString().trim();
     }
 

@@ -54,8 +54,9 @@ public class FileProcessor {
         if (file.exists() && !file.isDirectory()) {
             String strLine;
             try {
-                if ((strLine = br.readLine()) != null)
-                    return strLine.trim();
+                if ((strLine = br.readLine()) != null) {
+                        return strLine.trim();
+                }
                 else {
                     br.close();
                     return null;

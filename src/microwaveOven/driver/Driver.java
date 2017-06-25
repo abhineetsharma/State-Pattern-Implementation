@@ -1,5 +1,4 @@
 package microwaveOven.driver;
-
 import microwaveOven.service.MicrowaveContext;
 import microwaveOven.util.FileProcessor;
 import microwaveOven.util.Logger;

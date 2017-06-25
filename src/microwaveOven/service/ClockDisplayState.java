@@ -28,12 +28,8 @@ public class ClockDisplayState implements MicrowaveStateI {
                 CookingTime timeObject = new CookingTime();
                 timeObject.cookingTime =  num;
                 timeObject.time = LocalTime.now().plusSeconds(num);
-                context.setCookingTimeObject(timeObject);
-
-
                 context.setState(context.getCookingState());
-
-
+                context.setCookingTimeObject(timeObject);
             }catch (NumberFormatException e){
                 Logger.log(e.toString());
                 System.exit(1);
