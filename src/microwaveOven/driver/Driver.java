@@ -19,8 +19,6 @@ public class Driver {
                     Logger.log(String.format("Output File: %s", outputFile));
                 }
                 Results results = new Results(outputFile);
-
-                //Microwave State execution started
                 MicrowaveContext microWave = new MicrowaveContext(results);
                 String str;
                 while ((str = fileProcessor.readLine()) != null) {

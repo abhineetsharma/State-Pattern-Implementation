@@ -11,7 +11,7 @@ import java.time.temporal.ChronoUnit;
  */
 public class MicrowaveContext implements MicrowaveStateI {
 
-    private MicrowaveStateI initialState;
+    private MicrowaveStateI clockDisplayState;
     private MicrowaveStateI cookingState;
     private MicrowaveStateI haltState;
     private MicrowaveStateI clockSetState;
@@ -23,7 +23,7 @@ public class MicrowaveContext implements MicrowaveStateI {
     private Results results;
 
     public MicrowaveContext(Results results) {
-        this.initialState = new InitialState(this);
+        this.clockDisplayState = new ClockDisplayState(this);
         this.cookingState = new CookingState(this);
         this.haltState = new HaltState(this);
         this.clockSetState = new ClockSetState(this);
@@ -31,10 +31,9 @@ public class MicrowaveContext implements MicrowaveStateI {
         this.results = results;
         this.displayTimeObject = new DisplayTime();
         this.displayTimeObject.displayTime = this.displayTimeObject.localTime = LocalTime.now();
-        this.storeStringToResult(this.generate72Dash());
+        //this.storeStringToResult(this.generate72Dash());
 
-        this.state = getInitialState();
-        showDisplayTime();
+        this.setState(getClockDisplayState());
     }
 
 
@@ -42,7 +41,7 @@ public class MicrowaveContext implements MicrowaveStateI {
         try {
             updateDisplayTimeObject();
             //showDisplayTime();
-            String msg = String.format("Key pressed: %s",selector);
+            String msg = String.format("Key pressed : %s",selector);
             storeStringToResult(msg);
             switch (selector) {
                 case "setOrStart":
@@ -98,8 +97,8 @@ public class MicrowaveContext implements MicrowaveStateI {
         state.pressKey(num);
     }
 
-    MicrowaveStateI getInitialState() {
-        return initialState;
+    MicrowaveStateI getClockDisplayState() {
+        return clockDisplayState;
     }
 
     MicrowaveStateI getCookingState() {
@@ -119,9 +118,9 @@ public class MicrowaveContext implements MicrowaveStateI {
     }
 
     void setState(MicrowaveStateI state) {
-        results.storeNewResult(String.format("%s\nState changed to %s", generate72Dash(), beautifyName(state.getClass().getSimpleName())));
+        results.storeNewResult(String.format("%s\nChanging State \n%s\nState set to : %s", generate72Dash(),generate72Dash(), beautifyName(state.getClass().getSimpleName())));
         this.state = state;
-        if(state instanceof InitialState)showDisplayTime();
+        if(state instanceof ClockDisplayState)showDisplayTime();
     }
 
     void setCookingTimeObject(CookingTime cookingTimeObject) {

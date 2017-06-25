@@ -42,7 +42,7 @@ public class ClockSetState implements MicrowaveStateI {
                     dt.localTime = LocalTime.now();
                     dt.displayTime = lt;
                     context.setDisplayTimeObject(dt);
-                    context.setState(context.getInitialState());
+                    context.setState(context.getClockDisplayState());
                 }
                 else{
                     String msg = "Error in the time entered";
@@ -70,7 +70,7 @@ public class ClockSetState implements MicrowaveStateI {
     public void cancelOrStop() {
         String str = String.format("State : %s, Function name : %s",getClassName() ,getMethodName());
         Logger.log(str);
-        String msg = "cancel or Stop disabled";
+        String msg =String.format("%s %s", getMethodName()," disabled");
         context.storeStringToResult(msg);
     }
 
@@ -78,7 +78,7 @@ public class ClockSetState implements MicrowaveStateI {
     public void setClock() {
         String str = String.format("State : %s, Function name : %s",getClassName() ,getMethodName());
         Logger.log(str);
-        String msg = "setClock disabled";
+        String msg =String.format("%s %s", getMethodName()," disabled");
         context.storeStringToResult(msg);
     }
 

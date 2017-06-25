@@ -21,7 +21,7 @@ public class CookingState implements MicrowaveStateI {
     public void setOrStart() {
         String str = String.format("State : %s, Function name : %s",getClassName() ,getMethodName());
         Logger.log(str);
-        String msg = "set Or Start disabled";
+        String msg =String.format("%s %s", getMethodName()," disabled");
         context.storeStringToResult(msg);
         updateTimeObject();
     }
@@ -38,7 +38,7 @@ public class CookingState implements MicrowaveStateI {
     public void setClock() {
         String str = String.format("State : %s, Function name : %s",getClassName() ,getMethodName());
         Logger.log(str);
-        String msg = "set Clock disabled";
+        String msg =String.format("%s %s", getMethodName()," disabled");
         context.storeStringToResult(msg);
         updateTimeObject();
     }
@@ -47,7 +47,7 @@ public class CookingState implements MicrowaveStateI {
     public void pressKey(int num) {
         String str = String.format("State : %s, Function name : %s",getClassName() ,getMethodName());
         Logger.log(str);
-        String msg = "press Key disabled";
+        String msg =String.format("%s %s", getMethodName()," disabled");
         context.storeStringToResult(msg);
         updateTimeObject();
     }
@@ -66,7 +66,7 @@ public class CookingState implements MicrowaveStateI {
             if(timeObject == null){
                 String msg = "Cooking Done";
                 context.storeStringToResult(msg);
-                context.setState(context.getInitialState());
+                context.setState(context.getClockDisplayState());
             }
         }
     }

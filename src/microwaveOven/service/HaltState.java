@@ -34,14 +34,14 @@ public class HaltState implements MicrowaveStateI {
         String str = String.format("State : %s, Function name : %s",getClassName() ,getMethodName());
         Logger.log(str);
         context.setCookingTimeObject(null);
-        context.setState(context.getInitialState());
+        context.setState(context.getClockDisplayState());
     }
 
     @Override
     public void setClock() {
         String str = String.format("State : %s, Function name : %s",getClassName() ,getMethodName());
         Logger.log(str);
-        String msg = "set clock disabled";
+        String msg =String.format("%s %s", getMethodName()," disabled");
         context.storeStringToResult(msg);
     }
 
@@ -49,7 +49,7 @@ public class HaltState implements MicrowaveStateI {
     public void pressKey(int num) {
         String str = String.format("State : %s, Function name : %s",getClassName() ,getMethodName());
         Logger.log(str);
-        String msg = "Press key disabled";
+        String msg =String.format("%s %s", getMethodName()," disabled");
         context.storeStringToResult(msg);
     }
     public String getClassName() {

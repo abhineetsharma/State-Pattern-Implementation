@@ -6,11 +6,11 @@ import java.time.LocalTime;
 /**
  * Created by abhineetsharma on 6/18/17.
  */
-public class InitialState implements MicrowaveStateI {
+public class ClockDisplayState implements MicrowaveStateI {
 
     MicrowaveContext context;
     private String className;
-    public InitialState(MicrowaveContext context){
+    public ClockDisplayState(MicrowaveContext context){
         this.context = context;
         this.className = this.getClass().getSimpleName();
     }
@@ -18,7 +18,7 @@ public class InitialState implements MicrowaveStateI {
     private StringBuilder sbr;
     @Override
     public void setOrStart() {
-        String str = String.format("State : %s\nFunction name : %s",getClassName() ,getMethodName());
+        String str = String.format("State : %s Function name : %s",getClassName() ,getMethodName());
         Logger.log(str);
         if(null != sbr && sbr.length()>0){
             try{
@@ -47,22 +47,22 @@ public class InitialState implements MicrowaveStateI {
 
     @Override
     public void cancelOrStop() {
-        String str = String.format("State : %s\nFunction name : %s",getClassName() ,getMethodName());
+        String str = String.format("State : %s Function name : %s",getClassName() ,getMethodName());
         Logger.log(str);
-        String msg = "cancel disabled";
+        String msg =String.format("%s %s", getMethodName()," disabled");
         context.storeStringToResult(msg);
     }
 
     @Override
     public void setClock() {
-        String str = String.format("State : %s\nFunction name : %s",getClassName() ,getMethodName());
+        String str = String.format("State : %s Function name : %s",getClassName() ,getMethodName());
         Logger.log(str);
         context.setState(context.getClockSetState());
     }
 
     @Override
     public void pressKey(int num) {
-        String str = String.format("State : %s\nFunction name : %s",getClassName() ,getMethodName());
+        String str = String.format("State : %s Function name : %s",getClassName() ,getMethodName());
         Logger.log(str);
         if(sbr == null){
             sbr = new StringBuilder();
