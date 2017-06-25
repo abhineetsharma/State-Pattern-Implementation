@@ -19,9 +19,10 @@ public class Results implements StdoutDisplayInterface, FileDisplayInterface {
 
     public void storeNewResult(Object obj) {
         String str = obj.toString();
+        Logger.log(str);
         str = String.format("%s%s", str, "\n");
-        System.out.print(str);
-        //stringBuilderStorage.append(str);
+
+        stringBuilderStorage.append(str);
     }
 
     private String getStoredString() {
@@ -51,9 +52,9 @@ public class Results implements StdoutDisplayInterface, FileDisplayInterface {
 
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Logger.log(ex.toString());
             System.out.println("Error in printing stored string into the output file");
-            System.exit(0);
+            System.exit(1);
         }
 
 

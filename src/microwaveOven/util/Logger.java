@@ -1,57 +1,79 @@
 package microwaveOven.util;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Writer;
-import java.io.OutputStreamWriter;
+import java.io.File;
+import java.io.BufferedWriter;
+import java.time.LocalDateTime;
 
 public class Logger {
-    private static StringBuilder log = new StringBuilder();
+    private static Logger logger;
+    private static File file;
+    private static Writer writer;
+    private static String logFilePath;
 
-    public static boolean errors = false;
+    private Logger() {
 
-    public static void storeNewResult(Object obj) {
-        errors = true;
-        String str = obj.toString();
-        str = String.format("%s%s", str, "\n");
-        log.append(str);
-        writeToStdout();
+
     }
 
-    private static String getStoredLog() {
-        return log.toString().trim();
-    }
+    public static void stopLogging() {
 
-
-
-    public static void writeToStdout() {
-        System.out.println(getStoredLog());
-    }
-
-
-    public static void writeToFile() {
-        String outputPath = "";
-        File file;
         try {
-            if (null != outputPath) {
-                file = new File(outputPath);
-
-                if (file.exists() && !file.isDirectory()) file.delete();
-
-                try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-                        new FileOutputStream(outputPath), "utf-8"))) {
-                    String str = getStoredLog();
-                    writer.write(str);
-                }
-
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            System.out.println("Error in printing of stored string into the output file");
-            System.exit(0);
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Error in stopping logger string into the output file");
+            e.printStackTrace();
+            System.exit(1);
         }
 
 
     }
+
+    public static void log(Object obj) {
+        if (null == writer) {
+            try {
+                logFilePath = String.format("%s/%s", System.getProperty("user.dir"), "log.txt");
+                file = new File(logFilePath);
+                if (file.exists() && !file.isDirectory()) file.delete();
+                writer = new BufferedWriter(new FileWriter(logFilePath, true));
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                try {
+                    writer.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
+
+        String str =  "\n"+obj.toString();
+
+        str = str.replaceAll("[\\n]", "\n" + "[" + LocalDateTime.now().toString() + "] ");
+
+        writeToFile(str);
+    }
+
+    public static void writeToFile(String str) {
+
+
+        try {
+
+            writer.append(str);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            try {
+                writer.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+
+    }
+
+
 }

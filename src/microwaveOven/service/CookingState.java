@@ -1,5 +1,6 @@
 package microwaveOven.service;
 
+import microwaveOven.util.Logger;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
@@ -11,7 +12,6 @@ public class CookingState implements MicrowaveStateI {
     MicrowaveContext context;
     private String className;
 
-
     public CookingState(MicrowaveContext context) {
         this.context = context;
         this.className = this.getClass().getSimpleName();
@@ -20,7 +20,7 @@ public class CookingState implements MicrowaveStateI {
     @Override
     public void setOrStart() {
         String str = String.format("State : %s, Function name : %s",getClassName() ,getMethodName());
-        context.storeStringToResult(str);
+        Logger.log(str);
         String msg = "set Or Start disabled";
         context.storeStringToResult(msg);
         updateTimeObject();
@@ -29,15 +29,15 @@ public class CookingState implements MicrowaveStateI {
     @Override
     public void cancelOrStop() {
         String str = String.format("State : %s, Function name : %s",getClassName() ,getMethodName());
-        context.storeStringToResult(str);
+        Logger.log(str);
         context.setState(context.getHaltState());
-        updateTimeObject();
+
     }
 
     @Override
     public void setClock() {
         String str = String.format("State : %s, Function name : %s",getClassName() ,getMethodName());
-        context.storeStringToResult(str);
+        Logger.log(str);
         String msg = "set Clock disabled";
         context.storeStringToResult(msg);
         updateTimeObject();
@@ -46,7 +46,7 @@ public class CookingState implements MicrowaveStateI {
     @Override
     public void pressKey(int num) {
         String str = String.format("State : %s, Function name : %s",getClassName() ,getMethodName());
-        context.storeStringToResult(str);
+        Logger.log(str);
         String msg = "press Key disabled";
         context.storeStringToResult(msg);
         updateTimeObject();

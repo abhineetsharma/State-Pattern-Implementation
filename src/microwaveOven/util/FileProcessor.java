@@ -37,12 +37,13 @@ public class FileProcessor {
                     br.close();
                 } catch (IOException e) {
                     e.printStackTrace();
-                    System.exit(0);
+                    System.exit(1);
                 }
             }
         } else {
             System.out.println("input File not found");
-            System.exit(0);
+            Logger.log("input File not found");
+            System.exit(1);
         }
     }
 
@@ -60,7 +61,8 @@ public class FileProcessor {
                     return null;
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println("Error in code, check log file for information");
+                Logger.log(e.getMessage());
             }
         }
         return null;

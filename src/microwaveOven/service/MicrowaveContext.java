@@ -1,8 +1,6 @@
 package microwaveOven.service;
-
-
+import microwaveOven.util.Logger;
 import microwaveOven.util.Results;
-
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -12,11 +10,6 @@ import java.time.temporal.ChronoUnit;
  * Created by abhineetsharma on 6/17/17.
  */
 public class MicrowaveContext implements MicrowaveStateI {
-
-    public void setState(MicrowaveStateI state) {
-        results.storeNewResult(String.format("State changed to %s \n%s", state.getClass().getSimpleName(), generate72Dash()));
-        this.state = state;
-    }
 
     private MicrowaveStateI initialState;
     private MicrowaveStateI cookingState;
@@ -34,26 +27,22 @@ public class MicrowaveContext implements MicrowaveStateI {
         this.cookingState = new CookingState(this);
         this.haltState = new HaltState(this);
         this.clockSetState = new ClockSetState(this);
-        this.state = getInitialState();
+
         this.results = results;
         this.displayTimeObject = new DisplayTime();
-        this.displayTimeObject.displayTime = LocalTime.now();
-        this.displayTimeObject.localTime = LocalTime.now();
+        this.displayTimeObject.displayTime = this.displayTimeObject.localTime = LocalTime.now();
         this.storeStringToResult(this.generate72Dash());
+
+        this.state = getInitialState();
+        showDisplayTime();
     }
 
 
     public void action(String selector) {
         try {
             updateDisplayTimeObject();
-            showDisplayTime();
-            int num = -1;
-            if (selector.length() == 1)
-                num = isStringAInteger(selector);
-
-            if (num > -1)
-                selector = "keyPress";
-            String msg = String.format("Key pressed: %s", num > -1 ? Integer.toString(num) : selector);
+            //showDisplayTime();
+            String msg = String.format("Key pressed: %s",selector);
             storeStringToResult(msg);
             switch (selector) {
                 case "setOrStart":
@@ -65,26 +54,28 @@ public class MicrowaveContext implements MicrowaveStateI {
                 case "setClock":
                     setClock();
                     break;
-                case "keyPress":
-                    pressKey(num);
+                case "0":
+                case "1":
+                case "2":
+                case "3":
+                case "4":
+                case "5":
+                case "6":
+                case "7":
+                case "8":
+                case "9":
+                    pressKey(Integer.parseInt(selector));
                     break;
                 default:
                     storeStringToResult("Invalid key press");
 
             }
-            Thread.sleep(100);
+            Thread.sleep(1000);
 
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
+        } catch (InterruptedException e) {
+            Logger.log(e.toString());
         }
 
-    }
-
-    private void showDisplayTime() {
-        DateTimeFormatter Formatter =
-                DateTimeFormatter
-                        .ofLocalizedTime(FormatStyle.SHORT);
-        storeStringToResult(String.format("Display time is : %s", displayTimeObject.displayTime.format(Formatter).toString()));
     }
 
     @Override
@@ -107,29 +98,30 @@ public class MicrowaveContext implements MicrowaveStateI {
         state.pressKey(num);
     }
 
-
-    public MicrowaveStateI getInitialState() {
+    MicrowaveStateI getInitialState() {
         return initialState;
     }
 
-
-    public MicrowaveStateI getCookingState() {
+    MicrowaveStateI getCookingState() {
         return cookingState;
     }
 
-
-    public MicrowaveStateI getHaltState() {
+    MicrowaveStateI getHaltState() {
         return haltState;
     }
 
-
-    public MicrowaveStateI getClockSetState() {
+    MicrowaveStateI getClockSetState() {
         return clockSetState;
     }
 
-
-    public CookingTime getCookingTimeObject() {
+    CookingTime getCookingTimeObject() {
         return cookingTimeObject;
+    }
+
+    void setState(MicrowaveStateI state) {
+        results.storeNewResult(String.format("%s\nState changed to %s", generate72Dash(), beautifyName(state.getClass().getSimpleName())));
+        this.state = state;
+        if(state instanceof InitialState)showDisplayTime();
     }
 
     void setCookingTimeObject(CookingTime cookingTimeObject) {
@@ -140,37 +132,38 @@ public class MicrowaveContext implements MicrowaveStateI {
         this.cookingTimeObject = cookingTimeObject;
     }
 
-    int isStringAInteger(String str) {
+    void storeStringToResult(Object obj) {
+        if (null != obj)
+            results.storeNewResult(obj);
+    }
+
+    private int isStringAInteger(String str) {
         str = str.trim();
 
         try {
             int num = Integer.parseInt(str);
             return num;
         } catch (NumberFormatException e) {
-            //e.printStackTrace();
-            //System.exit(0);
+            Logger.log(e.toString());
         }
 
         return -1;
     }
 
-    void storeStringToResult(Object obj) {
-        if (null != obj)
-            results.storeNewResult(obj);
+    void showDisplayTime() {
+        DateTimeFormatter Formatter =
+                DateTimeFormatter
+                        .ofLocalizedTime(FormatStyle.SHORT);
+        storeStringToResult(String.format("Display time is : %s", displayTimeObject.displayTime.format(Formatter).toString()));
     }
 
     private String generate72Dash() {
         StringBuilder sbr = new StringBuilder();
         for (int i = 0; i < 72; i++) sbr.append("-");
-        //sbr.append("\n");
         return sbr.toString();
     }
 
-    public void setDisplayTimeObject(DisplayTime displayTimeObject) {
-        this.displayTimeObject = displayTimeObject;
-    }
-
-    void updateDisplayTimeObject() {
+    private void updateDisplayTimeObject() {
 
         DisplayTime dt = new DisplayTime();
         dt.displayTime = displayTimeObject.displayTime;
@@ -179,17 +172,25 @@ public class MicrowaveContext implements MicrowaveStateI {
         long sec = ChronoUnit.SECONDS.between(dt.localTime, LocalTime.now());
         displayTimeObject.displayTime = displayTimeObject.displayTime.plusSeconds(sec);
         displayTimeObject.localTime = LocalTime.now();
+    }
+
+    private String beautifyName(String name){
+        StringBuilder sbr = new StringBuilder();
+        for(char c : name.toCharArray()){
+            int n = (int)c;
+            if(c<91){
+                sbr.append(" ");
+            }
+            sbr.append(c);
+        }
 
 
+        return sbr.toString().trim();
+    }
+
+    public void setDisplayTimeObject(DisplayTime displayTimeObject) {
+        this.displayTimeObject = displayTimeObject;
     }
 }
 
-class CookingTime {
-    int cookingTime;
-    LocalTime time;
-}
 
-class DisplayTime {
-    LocalTime displayTime;
-    LocalTime localTime;
-}

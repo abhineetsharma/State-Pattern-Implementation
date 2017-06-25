@@ -1,5 +1,6 @@
 package microwaveOven.service;
 
+import microwaveOven.util.Logger;
 import java.time.DateTimeException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -22,7 +23,7 @@ public class ClockSetState implements MicrowaveStateI {
     @Override
     public void setOrStart() {
         String str = String.format("State : %s, Function name : %s",getClassName() ,getMethodName());
-        context.storeStringToResult(str);
+        Logger.log(str);
         if(validatePressKey()) {
             try {
                 String minStr = sbr.substring(sbr.length()-2,sbr.length());
@@ -30,26 +31,32 @@ public class ClockSetState implements MicrowaveStateI {
 
                 String hrStr = sbr.substring(0,sbr.length()-2);
                 int hr = Integer.parseInt(hrStr);
-                sbr = null;
-                LocalTime lt = LocalTime.of(hr,min);
-                String msg = String.format("The display clock set to %s ",lt.format(DateTimeFormatter
-                        .ofLocalizedTime(FormatStyle.SHORT)).toString());
-                context.storeStringToResult(msg);
-                DisplayTime dt = new DisplayTime();
-                dt.localTime = LocalTime.now();
-                dt.displayTime = lt;
-                context.setDisplayTimeObject(dt);
 
-                context.setState(context.getInitialState());
+                sbr = null;
+                if(hr<24 && min < 60){
+                    LocalTime lt = LocalTime.of(hr,min);
+                    String msg = String.format("The display clock set to %s ",
+                            lt.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)).toString());
+                    context.storeStringToResult(msg);
+                    DisplayTime dt = new DisplayTime();
+                    dt.localTime = LocalTime.now();
+                    dt.displayTime = lt;
+                    context.setDisplayTimeObject(dt);
+                    context.setState(context.getInitialState());
+                }
+                else{
+                    String msg = "Error in the time entered";
+                    context.storeStringToResult(msg);
+                }
             } catch (NumberFormatException e) {
-//                Logger.storeStringToResult(e.getMessage().toString());
-                e.printStackTrace();
-                System.exit(0);
+                Logger.log(e.toString());
+                System.out.println("Error in code, check log file for information");
+                System.exit(1);
             }
             catch (DateTimeException e){
-//                Logger.storeStringToResult(e.getMessage().toString());
-                e.printStackTrace();
-                System.exit(0);
+                Logger.log(e.toString());
+                System.out.println("Error in code, check log file for information");
+                System.exit(1);
             }
 
         }
@@ -62,7 +69,7 @@ public class ClockSetState implements MicrowaveStateI {
     @Override
     public void cancelOrStop() {
         String str = String.format("State : %s, Function name : %s",getClassName() ,getMethodName());
-        context.storeStringToResult(str);
+        Logger.log(str);
         String msg = "cancel or Stop disabled";
         context.storeStringToResult(msg);
     }
@@ -70,7 +77,7 @@ public class ClockSetState implements MicrowaveStateI {
     @Override
     public void setClock() {
         String str = String.format("State : %s, Function name : %s",getClassName() ,getMethodName());
-        context.storeStringToResult(str);
+        Logger.log(str);
         String msg = "setClock disabled";
         context.storeStringToResult(msg);
     }
@@ -78,22 +85,20 @@ public class ClockSetState implements MicrowaveStateI {
     @Override
     public void pressKey(int num) {
         String str = String.format("State : %s, Function name : %s",getClassName() ,getMethodName());
-        context.storeStringToResult(str);
+        Logger.log(str);
         if(sbr == null){
             sbr = new StringBuilder();
         }
-        sbr.append(num);
+        if(sbr.length()<4)
+            sbr.append(num);
+        else
+            context.storeStringToResult("BEEP");
     }
 
     public boolean validatePressKey(){
         if(sbr == null) return false;
         else if(sbr.length()<3) return false;
         else if(sbr.length()<5)return true;
-        else if(sbr.length()>=5){
-            while(sbr.length()>4)
-                sbr.deleteCharAt(0);
-            return true;
-        }
         else return false;
     }
 
