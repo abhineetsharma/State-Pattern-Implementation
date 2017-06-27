@@ -52,5 +52,10 @@ setClock
 setOrStart
 cancelOrStop
 cancelOrStop
+setClock
+1
+2
+3
+setOrStart
 
 
