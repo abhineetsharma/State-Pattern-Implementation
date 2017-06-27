@@ -26,8 +26,10 @@ public class ClockDisplayState implements MicrowaveStateI {
                 sbr = null;
 
                 CookingTime timeObject = new CookingTime();
-                timeObject.cookingTime =  num;
+                timeObject.cookingTimeLeft =  num;
                 timeObject.time = LocalTime.now().plusSeconds(num);
+                String msg = String.format("Cooking time set to : %d sec",num);
+                context.storeStringToResult(msg);
                 context.setState(context.getCookingState());
                 context.setCookingTimeObject(timeObject);
             }catch (NumberFormatException e){
@@ -52,6 +54,7 @@ public class ClockDisplayState implements MicrowaveStateI {
     @Override
     public void setClock() {
         String str = String.format("State : %s Function name : %s",getClassName() ,getMethodName());
+        sbr = null;
         Logger.log(str);
         context.setState(context.getClockSetState());
     }

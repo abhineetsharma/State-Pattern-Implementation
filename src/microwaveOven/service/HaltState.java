@@ -23,9 +23,9 @@ public class HaltState implements MicrowaveStateI {
         CookingTime currentTimeObject = context.getCookingTimeObject();
         if(null != currentTimeObject )
         {
-            currentTimeObject.time = LocalTime.now().plusSeconds(currentTimeObject.cookingTime);
-            context.setCookingTimeObject(currentTimeObject);
+            currentTimeObject.time = LocalTime.now().plusSeconds(currentTimeObject.cookingTimeLeft);
             context.setState(context.getCookingState());
+            context.setCookingTimeObject(currentTimeObject);
         }
     }
 

@@ -45,17 +45,19 @@ public class ClockSetState implements MicrowaveStateI {
                     context.setState(context.getClockDisplayState());
                 }
                 else{
-                    String msg = "Error in the time entered";
+                    String msg = "Error in the time entered, please re-enter the time in 24-hrs format.";
                     context.storeStringToResult(msg);
                 }
             } catch (NumberFormatException e) {
+                e.printStackTrace();
                 Logger.log(e.toString());
-                System.out.println("Error in code, check log file for information");
+                System.out.println("Error in code,check log file ");
                 System.exit(1);
             }
             catch (DateTimeException e){
+                e.printStackTrace();
                 Logger.log(e.toString());
-                System.out.println("Error in code, check log file for information");
+                System.out.println("Error in code, check log file ");
                 System.exit(1);
             }
 

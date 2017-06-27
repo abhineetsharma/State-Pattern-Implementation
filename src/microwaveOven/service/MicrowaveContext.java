@@ -1,6 +1,5 @@
 package microwaveOven.service;
 
-import microwaveOven.util.Logger;
 import microwaveOven.util.Results;
 
 import java.time.LocalTime;
@@ -38,42 +37,37 @@ public class MicrowaveContext implements MicrowaveStateI {
 
 
     public void action(String selector) {
-        try {
-            if (selector.length() > 0) {
-                updateDisplayTimeObject();
-                String msg = String.format("Key pressed : %s", selector);
-                storeStringToResult(msg);
-                switch (selector) {
-                    case "setOrStart":
-                        setOrStart();
-                        break;
-                    case "cancelOrStop":
-                        cancelOrStop();
-                        break;
-                    case "setClock":
-                        setClock();
-                        break;
-                    case "0":
-                    case "1":
-                    case "2":
-                    case "3":
-                    case "4":
-                    case "5":
-                    case "6":
-                    case "7":
-                    case "8":
-                    case "9":
-                        pressKey(Integer.parseInt(selector));
-                        break;
-                    default:
-                        storeStringToResult("Invalid key press");
 
-                }
-                Thread.sleep(1000);
+        if (selector.length() > 0) {
+            updateDisplayTimeObject();
+            String msg = String.format("Key pressed : %s", selector);
+            storeStringToResult(msg);
+            switch (selector) {
+                case "setOrStart":
+                    setOrStart();
+                    break;
+                case "cancelOrStop":
+                    cancelOrStop();
+                    break;
+                case "setClock":
+                    setClock();
+                    break;
+                case "0":
+                case "1":
+                case "2":
+                case "3":
+                case "4":
+                case "5":
+                case "6":
+                case "7":
+                case "8":
+                case "9":
+                    pressKey(Integer.parseInt(selector));
+                    break;
+                default:
+                    storeStringToResult("Invalid key press");
+
             }
-
-        } catch (InterruptedException e) {
-            Logger.log(e.toString());
         }
 
     }
@@ -126,7 +120,7 @@ public class MicrowaveContext implements MicrowaveStateI {
 
     void setCookingTimeObject(CookingTime cookingTimeObject) {
         if (null != cookingTimeObject) {
-            String msg = String.format("Cooking time left : %d sec", cookingTimeObject.cookingTime);
+            String msg = String.format("Cooking time left : %d sec", cookingTimeObject.cookingTimeLeft);
             storeStringToResult(msg);
         }
         this.cookingTimeObject = cookingTimeObject;
@@ -161,7 +155,7 @@ public class MicrowaveContext implements MicrowaveStateI {
         StringBuilder sbr = new StringBuilder();
         for (char c : name.toCharArray()) {
             int n = (int) c;
-            if (n <= (int)'Z' && n >= (int)'A')
+            if (n <= (int) 'Z' && n >= (int) 'A')
                 sbr.append(" ");
 
             sbr.append(c);

@@ -58,8 +58,8 @@ public class CookingState implements MicrowaveStateI {
         if (null != currentTimeObject) {
             long secPassed = ChronoUnit.SECONDS.between(LocalTime.now(),currentTimeObject.time);
             if (secPassed > 0) {
-                currentTimeObject.cookingTime = (int) secPassed;
-                currentTimeObject.time.plusSeconds(currentTimeObject.cookingTime);
+                currentTimeObject.cookingTimeLeft = (int) secPassed;
+                currentTimeObject.time.plusSeconds(currentTimeObject.cookingTimeLeft);
                 timeObject = currentTimeObject;
             }
             context.setCookingTimeObject(timeObject);

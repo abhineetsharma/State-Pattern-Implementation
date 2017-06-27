@@ -13,7 +13,7 @@ public class Driver {
                 FileProcessor fileProcessor = new FileProcessor(inputFile);
 
                 String outputFile = null;
-                if (args.length > 1) {
+                if (args.length > 1 && args[1].trim().length()>0) {
                     outputFile = args[1];
                     Logger.log(String.format("Output File: %s", outputFile));
                 }

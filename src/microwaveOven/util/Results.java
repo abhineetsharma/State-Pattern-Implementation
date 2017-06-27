@@ -13,7 +13,6 @@ public class Results implements StdoutDisplayInterface, FileDisplayInterface {
     private String outputPath;
 
     public Results(String path) {
-
         this.outputPath = path;
     }
 
@@ -21,7 +20,6 @@ public class Results implements StdoutDisplayInterface, FileDisplayInterface {
         String str = obj.toString();
         Logger.log(str);
         str = String.format("%s%s", str, "\n");
-
         stringBuilderStorage.append(str);
     }
 
@@ -36,10 +34,9 @@ public class Results implements StdoutDisplayInterface, FileDisplayInterface {
 
     @Override
     public void writeToFile() {
-
         File file;
         try {
-            if (null != outputPath) {
+            if (null != outputPath && outputPath.trim().length() > 0) {
                 file = new File(outputPath);
 
                 if (file.exists() && !file.isDirectory()) file.delete();
@@ -49,11 +46,15 @@ public class Results implements StdoutDisplayInterface, FileDisplayInterface {
                     String str = getStoredString();
                     writer.write(str);
                 }
-
+            }
+            else{
+                String msg = "No output file found, file either is null or a blank string";
+                storeNewResult(msg);
             }
         } catch (Exception ex) {
+            ex.printStackTrace();
             Logger.log(ex.toString());
-            System.out.println("Error in printing stored string into the output file");
+            System.out.println("Error in printing stored string into the given output file");
             System.exit(1);
         }
 

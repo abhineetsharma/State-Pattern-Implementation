@@ -41,7 +41,6 @@ public class FileProcessor {
                 }
             }
         } else {
-            System.out.println("input File not found");
             Logger.log("input File not found");
             System.exit(1);
         }
@@ -62,8 +61,10 @@ public class FileProcessor {
                     return null;
                 }
             } catch (IOException e) {
-                System.out.println("Error in code, check log file for information");
+                e.printStackTrace();
+                System.out.println("Error in readLine, check log file for information");
                 Logger.log(e.getMessage());
+                System.exit(1);
             }
         }
         return null;
