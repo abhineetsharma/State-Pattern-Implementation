@@ -38,7 +38,7 @@ term of Big O complexity (time and/or space)
 String builder was used to store the output from the program.
 Time Complexity of accessing the String Builder is O(n).
 
-To accessing and changing the state pattern we are using a linear access, hence the time complexity O(n)
+To access and change the state pattern we are using a linear access, hence the time complexity O(n)
 
 -----------------------------------------------------------------------
 
